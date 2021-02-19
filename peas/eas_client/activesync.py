@@ -1,13 +1,17 @@
+import base64
+import sys
+import uuid
+from io import StringIO
+from urllib.parse import urlencode, urlparse
+
 from twisted.internet import reactor, protocol, defer
 from twisted.internet.ssl import ClientContextFactory
 from twisted.python.failure import Failure
 from twisted.web.client import Agent
 from twisted.web.http_headers import Headers
-from xml.dom.minidom import getDOMImplementation
-import base64, urlparse, StringIO, uuid, sys
-from urllib import urlencode
-from dewbxml import wbxmlparser, wbxmlreader, wbxmldocument, wbxmlelement, wbxmlstring
-from activesync_producers import WBXMLProducer, FolderSyncProducer, SyncProducer, ProvisionProducer, ItemOperationsProducer
+
+from activesync_producers import FolderSyncProducer, SyncProducer, ProvisionProducer, ItemOperationsProducer
+from dewbxml import wbxmlparser, wbxmlreader, wbxmlelement
 
 version = "1.0"
 
@@ -52,7 +56,7 @@ class WBXMLHandler(protocol.Protocol):
     def dataReceived(self, data):
         self.d += data
     def connectionLost(self, reason):
-        if self.verbose: print "FINISHED LOADING"#, self.d.encode("hex")
+        if self.verbose: print ("FINISHED LOADING", self.d.encode("hex"))
         if not len(self.d):
             # this is valid from sync command
             self.deferred.callback(None)
@@ -60,7 +64,7 @@ class WBXMLHandler(protocol.Protocol):
         wb = wbxmlparser()
         doc = wb.parse(DataReader(self.d))
         res_dict = convert_wbelem_to_dict(doc.root)
-        if self.verbose: print "Result:",res_dict
+        if self.verbose: print ("Result:",res_dict)
         if "Status" in res_dict.values()[0]:
             err_status = int(res_dict.values()[0]["Status"])
             if err_status != 1:
@@ -99,7 +103,7 @@ class ActiveSync(object):
     # Response processing
 
     def activesync_error(self, err):
-        if self.verbose: print "ERROR",err
+        if self.verbose: print ("ERROR",err)
         return Failure(exc_value=err, exc_type="ActiveSync")
     def options_response(self, resp):
         if resp.code != 200:
@@ -142,7 +146,7 @@ class ActiveSync(object):
 
                     for command, cmdinfo in commands.iteritems():
                         if self.verbose:
-                            print "PROCESS COMMAND:", command, cmdinfo
+                            print ("PROCESS COMMAND:", command, cmdinfo)
                         if command == 'Add':
                             server_id = cmdinfo['ServerId']
                             self.collection_data[collection_id]['data'][server_id] = cmdinfo
@@ -151,18 +155,18 @@ class ActiveSync(object):
                     # This seems to assume "commands" is a list but it was a dict when tested.
                     for command in resp["Sync"]["Collections"]["Collection"]["Commands"]:
                         if self.verbose:
-                            print "PROCESS COMMAND",command
-                            print "all commands:", resp["Sync"]["Collections"]["Collection"]["Commands"]
+                            print ("PROCESS COMMAND", command)
+                            print ("all commands:", resp["Sync"]["Collections"]["Collection"]["Commands"])
                         if "Add" in command:
                             try:
                                 server_id = command["Add"]["ServerId"]
                             except:
-                                print "ERROR: Unexpected add format:",command["Add"]
+                                print ("ERROR: Unexpected add format:",command["Add"])
                                 continue
                             self.collection_data[collection_id]["data"][server_id] = command["Add"]
         
         if "MoreAvailable" in resp["Sync"]["Collections"]["Collection"]:
-            if self.verbose: print "MORE AVAILABLE, syncing again"
+            if self.verbose: print ("MORE AVAILABLE, syncing again")
             return self.sync(collection_id, sync_key)
 
         return self.collection_data[collection_id]["data"]
@@ -178,7 +182,7 @@ class ActiveSync(object):
         return self.folder_data["folders"]
 
     def acknowledge_result(self, policyKey):
-        if self.verbose: print "FINAL POLICY KEY",policyKey
+        if self.verbose: print ("FINAL POLICY KEY",policyKey)
         self.policy_key = policyKey
         return True
     def process_policy_key(self, resp):
@@ -206,7 +210,7 @@ class ActiveSync(object):
     # Request queueing
 
     def queue_full(self, next_request):
-        if self.verbose: print "Queue full",next_request
+        if self.verbose: print ("Queue full",next_request)
         method = next_request[0]
         retd = next_request[-1]
         args = next_request[1:-2]
@@ -216,19 +220,19 @@ class ActiveSync(object):
         d.addErrback(self.request_failed, retd)
 
     def request_finished(self, obj, return_deferred):
-        if self.verbose: print "Request finished, resetting queue",obj,return_deferred
+        if self.verbose: print ("Request finished, resetting queue",obj,return_deferred)
         self.queue_deferred = self.operation_queue.get()
         self.queue_deferred.addCallback(self.queue_full)
         return_deferred.callback(obj)
 
     def request_failed(self, failure, return_deferred):
-        if self.verbose: print "Request failed, resetting queue",failure,return_deferred
+        if self.verbose: print ("Request failed, resetting queue",failure,return_deferred)
         self.queue_deferred = self.operation_queue.get()
         self.queue_deferred.addCallback(self.queue_full)
         return_deferred.errback(failure)
 
     def add_operation(self, *operation_method_and_args, **kwargs):
-        if self.verbose: print "Add operation",operation_method_and_args
+        if self.verbose: print ("Add operation",operation_method_and_args)
         ret_d = defer.Deferred()
         self.operation_queue.put(operation_method_and_args+(kwargs,ret_d,))
         return ret_d
@@ -236,7 +240,7 @@ class ActiveSync(object):
     # Supported Requests
 
     def get_options(self):
-        if self.verbose: print "Options, get URL:",self.get_url(),"Authorization",self.authorization_header()
+        if self.verbose: print ("Options, get URL:",self.get_url(),"Authorization",self.authorization_header())
         d = self.agent.request(
             'OPTIONS',
             self.get_url(),
