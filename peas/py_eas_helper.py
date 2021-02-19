@@ -14,7 +14,7 @@ def body_result(result, emails, num_emails):
         reactor.stop()
 
 
-def sync_result(result, fid, async, emails):
+def sync_result(result, fid, actsync, emails):
 
     assert hasattr(result, 'keys')
 
@@ -22,22 +22,22 @@ def sync_result(result, fid, async, emails):
 
     for fetch_id in result.keys():
 
-        async.add_operation(async.fetch, collectionId=fid, serverId=fetch_id,
+        actsync.add_operation(actsync.fetch, collectionId=fid, serverId=fetch_id,
             fetchType=4, mimeSupport=2).addBoth(body_result, emails, num_emails)
 
 
-def fsync_result(result, async, emails):
+def fsync_result(result, actsync, emails):
 
     for (fid, finfo) in result.iteritems():
         if finfo['DisplayName'] == 'Inbox':
-            async.add_operation(async.sync, fid).addBoth(sync_result, fid, async, emails)
+            actsync.add_operation(actsync.sync, fid).addBoth(sync_result, fid, actsync, emails)
             break
 
 
-def prov_result(success, async, emails):
+def prov_result(success, actsync, emails):
 
     if success:
-        async.add_operation(async.folder_sync).addBoth(fsync_result, async, emails)
+        actsync.add_operation(actsync.folder_sync).addBoth(fsync_result, actsync, emails)
     else:
         reactor.stop()
 
@@ -46,10 +46,10 @@ def extract_emails(creds):
 
     emails = []
 
-    async = eas_client.activesync.ActiveSync(creds['domain'], creds['user'], creds['password'],
+    actsync = eas_client.activesync.ActiveSync(creds['domain'], creds['user'], creds['password'],
             creds['server'], True, device_id=creds['device_id'], verbose=False)
 
-    async.add_operation(async.provision).addBoth(prov_result, async, emails)
+    actsync.add_operation(actsync.provision).addBoth(prov_result, actsync, emails)
 
     reactor.run()
 
