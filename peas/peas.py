@@ -78,7 +78,7 @@ class Peas:
 
         assert self._backend == PY_ACTIVE_SYNC
 
-        py_activesync_helper.disable_certificate_verification()
+        disable_certificate_verification()
 
     def get_server_headers(self):
         """Get the ActiveSync web server headers."""
