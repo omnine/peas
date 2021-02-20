@@ -3,7 +3,8 @@
 from distutils.core import setup
 import py2exe
 
-setup(console=['peas/__main__.py'])
+setup(name='PEAS',
+      console=['peas/__main__.py'])
 
 """
 setup(name='PEAS',
