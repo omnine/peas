@@ -725,7 +725,7 @@ class wbxmlparser(object):
         token = data.read()
         minor = 0b1111 & token
         major = (token >> 4) + 1
-        doc.version = `major` + '.' + `minor`
+        doc.version = repr(major) + '.' + repr(minor)
 
     def __publicid(self, data, doc):
         r'''Sets the schema attribute of a WBXML DOM document object. Also sets

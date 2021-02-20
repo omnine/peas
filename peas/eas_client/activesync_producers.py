@@ -1,7 +1,7 @@
 from twisted.internet.defer import succeed
 from twisted.web.iweb import IBodyProducer
 from zope.interface import implements
-from dewbxml import wbxmldocument, wbxmlelement, wbxmlstring
+from .dewbxml import wbxmldocument, wbxmlelement, wbxmlstring
 import struct
 
 

@@ -10,8 +10,8 @@ from twisted.python.failure import Failure
 from twisted.web.client import Agent
 from twisted.web.http_headers import Headers
 
-from activesync_producers import FolderSyncProducer, SyncProducer, ProvisionProducer, ItemOperationsProducer
-from dewbxml import wbxmlparser, wbxmlreader, wbxmlelement
+from .activesync_producers import FolderSyncProducer, SyncProducer, ProvisionProducer, ItemOperationsProducer
+from .dewbxml import wbxmlparser, wbxmlreader, wbxmlelement
 
 version = "1.0"
 
