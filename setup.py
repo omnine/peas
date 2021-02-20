@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 
 from distutils.core import setup
+import py2exe
 
+setup(console=['peas/__main__.py'])
+
+"""
 setup(name='PEAS',
       version='1.0',
       description='ActiveSync Library',
@@ -11,3 +15,4 @@ setup(name='PEAS',
                 'peas.pyActiveSync', 'peas.pyActiveSync.client', 'peas.pyActiveSync.objects', 'peas.pyActiveSync.utils'],
       scripts=['scripts/peas'],
      )
+"""
