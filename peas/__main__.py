@@ -8,7 +8,9 @@ from random import choice
 from string import ascii_uppercase, digits
 from optparse import OptionParser
 
-import peas
+#import peas
+
+
 from pathlib import Path, PureWindowsPath
 
 R = '\033[1;31m'  # RED
@@ -442,8 +444,8 @@ def main():
     arg_parser = create_arg_parser()
     (options, args) = arg_parser.parse_args()
 
-    if not options.quiet:
-        peas.show_banner()
+#    if not options.quiet:
+#        show_banner()
 
     options = process_options(options)
 

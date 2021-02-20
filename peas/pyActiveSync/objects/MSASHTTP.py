@@ -107,7 +107,7 @@ class ASHTTPConnector(object):
 
     def options(self):
         res = self.get_options()
-        if res.status is 200:
+        if res.status == 200:
             self._server_protocol_versions = res.getheader("ms-asprotocolversions")
             self._server_protocol_commands = res.getheader("ms-asprotocolcommands")
             self._server_version = res.getheader("ms-server-activesync")

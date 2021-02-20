@@ -3,8 +3,8 @@ __author__ = 'Adam Rutherford'
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
-import py_eas_helper
-import py_activesync_helper
+from .py_eas_helper import *
+from .py_activesync_helper import *
 
 
 PY_ACTIVE_SYNC = 1
@@ -43,7 +43,7 @@ class Peas:
 
     def extract_emails_py_eas_client(self):
 
-        emails = py_eas_helper.extract_emails(self._creds)
+        emails = extract_emails(self._creds)
         return emails
 
     def extract_emails(self):

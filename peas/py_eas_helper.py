@@ -2,7 +2,7 @@ __author__ = 'Adam Rutherford'
 
 from twisted.internet import reactor
 
-import eas_client.activesync
+from .eas_client.activesync import *
 
 
 def body_result(result, emails, num_emails):

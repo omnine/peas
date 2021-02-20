@@ -22,20 +22,20 @@ import ssl
 # https://docs.python.org/2/library/xml.html#xml-vulnerabilities
 from lxml import etree as ElementTree
 
-from pyActiveSync.utils.as_code_pages import as_code_pages
-from pyActiveSync.utils.wbxml import wbxml_parser
-from pyActiveSync.client.storage import storage
+from .pyActiveSync.utils.as_code_pages import as_code_pages
+from .pyActiveSync.utils.wbxml import wbxml_parser
+from .pyActiveSync.client.storage import storage
 
-from pyActiveSync.client.FolderSync import FolderSync
-from pyActiveSync.client.Sync import Sync
-from pyActiveSync.client.GetItemEstimate import GetItemEstimate
-from pyActiveSync.client.Provision import Provision
-from pyActiveSync.client.Search import Search
-from pyActiveSync.client.ItemOperations import ItemOperations
+from .pyActiveSync.client.FolderSync import FolderSync
+from .pyActiveSync.client.Sync import Sync
+from .pyActiveSync.client.GetItemEstimate import GetItemEstimate
+from .pyActiveSync.client.Provision import Provision
+from .pyActiveSync.client.Search import Search
+from .pyActiveSync.client.ItemOperations import ItemOperations
 
-from pyActiveSync.objects.MSASHTTP import ASHTTPConnector
-from pyActiveSync.objects.MSASCMD import as_status
-from pyActiveSync.objects.MSASAIRS import airsync_FilterType, airsync_Conflict, airsync_MIMETruncation, \
+from .pyActiveSync.objects.MSASHTTP import ASHTTPConnector
+from .pyActiveSync.objects.MSASCMD import as_status
+from .pyActiveSync.objects.MSASAIRS import airsync_FilterType, airsync_Conflict, airsync_MIMETruncation, \
     airsync_MIMESupport, \
     airsync_Class, airsyncbase_Type
 
