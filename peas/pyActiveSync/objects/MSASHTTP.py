@@ -17,7 +17,7 @@
 #  MA  02110-1301, USA.
 ########################################################################
 
-import httplib, urllib
+import http.client, urllib
 
 class ASHTTPConnector(object):
     """ActiveSync HTTP object"""
@@ -47,10 +47,10 @@ class ASHTTPConnector(object):
 
     def do_post(self, url, body, headers, redirected=False):
         if self.ssl:
-            conn = httplib.HTTPSConnection(self.server, self.port)
+            conn = http.client.HTTPSConnection(self.server, self.port)
             conn.request("POST", url, body, headers)
         else:
-            conn = httplib.HTTPConnection(self.server, self.port)
+            conn = http.client.HTTPConnection(self.server, self.port)
             conn.request("POST", url, body, headers)
         res = conn.getresponse()
         if res.status == 451:
@@ -100,7 +100,7 @@ class ASHTTPConnector(object):
         return res.read(), res.status, content_type
 
     def get_options(self):
-        conn = httplib.HTTPSConnection(self.server, self.port)
+        conn = http.client.HTTPSConnection(self.server, self.port)
         conn.request("OPTIONS", "/Microsoft-Server-ActiveSync", None, self.headers)
         res = conn.getresponse()
         return res
