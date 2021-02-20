@@ -18,7 +18,7 @@
 ########################################################################
 
 
-from wapxml import wapxmltree, wapxmlnode
+from .wapxml import wapxmltree, wapxmlnode
 
 class wbxml_parser(object):
     """WBXML Parser"""

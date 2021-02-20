@@ -19,7 +19,7 @@
 
 """[MS-ASEMAIL] Email class namespace objects"""
 
-from MSASAIRS import airsyncbase_Type, airsyncbase_Body, airsyncbase_Attachment, airsyncbase_Attachments, airsyncbase_Method, airsyncbase_NativeBodyType, airsyncbase_BodyPart
+from .MSASAIRS import airsyncbase_Type, airsyncbase_Body, airsyncbase_Attachment, airsyncbase_Attachments, airsyncbase_Method, airsyncbase_NativeBodyType, airsyncbase_BodyPart
 
 class email_Importance:
     Low =    0
