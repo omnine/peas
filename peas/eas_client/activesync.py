@@ -53,8 +53,10 @@ class WBXMLHandler(protocol.Protocol):
         self.deferred = deferred
         self.d = ''
         self.verbose = verbose
+
     def dataReceived(self, data):
         self.d += data
+
     def connectionLost(self, reason):
         if self.verbose: print ("FINISHED LOADING", self.d.encode("hex"))
         if not len(self.d):

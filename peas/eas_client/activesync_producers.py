@@ -1,22 +1,27 @@
 from twisted.internet.defer import succeed
 from twisted.web.iweb import IBodyProducer
 from zope.interface import implements
-from dewbxml import wbxmlparser, wbxmlreader, wbxmldocument, wbxmlelement, wbxmlstring
+from dewbxml import wbxmldocument, wbxmlelement, wbxmlstring
 import struct
+
 
 class WBXMLProducer(object):
 	implements(IBodyProducer)
+
 	def __init__(self, wbdoc, verbose=False):
-		self.verbose=verbose
+		self.verbose = verbose
 		self.wb = wbdoc
 		self.body = str(self.wb.tobytes())
 		self.length = len(self.body)
+
 	def startProducing(self, consumer):
 		#if self.verbose: print "Producing",self.body.encode("hex"), self.wb
 		consumer.write(self.body)
 		return succeed(None)
+
 	def pauseProducing(self): pass
 	def stopProducing(self): pass
+
 
 def convert_array_to_children(in_elem, in_val):
 	if isinstance(in_val, list):
@@ -28,11 +33,12 @@ def convert_array_to_children(in_elem, in_val):
 			in_elem.addchild(add_elem)
 			convert_array_to_children(add_elem, v[1])
 	elif isinstance(in_val, dict):
-		print "FOUND OPAQUE THING",in_val
+		print ("FOUND OPAQUE THING", in_val)
 		in_elem.addchild(wbxmlstring(struct.pack(in_val["fmt"],in_val["val"]), opaque=True))
-		print "OPAQUE PRODUCED",in_elem
+		print ("OPAQUE PRODUCED", in_elem)
 	elif in_val != None:
 		in_elem.addchild(wbxmlstring(in_val))
+
 
 def convert_dict_to_wbxml(indict, default_page_num=None):
 	wb = wbxmldocument()
@@ -55,8 +61,8 @@ class FolderSyncProducer(WBXMLProducer):
 			"FolderSync": [
 				("SyncKey", str(sync_key))
 			]
-		}, default_page_num=7);
-		return WBXMLProducer.__init__(self, wb, verbose=verbose)
+		}, default_page_num=7)
+		WBXMLProducer.__init__(self, wb, verbose=verbose)
 
 
 
@@ -91,7 +97,7 @@ class ItemOperationsProducer(WBXMLProducer):
 					("Options",[]),
 				]))				
 		wb = convert_dict_to_wbxml(wbdict, default_page_num=20)
-		return WBXMLProducer.__init__(self, wb, verbose=verbose)
+		WBXMLProducer.__init__(self, wb, verbose=verbose)
 
 class SyncProducer(WBXMLProducer):
 	def __init__(self, collection_id, sync_key, get_body, verbose=False):
@@ -118,7 +124,7 @@ class SyncProducer(WBXMLProducer):
 				], 17)
 			]))
 		wb = convert_dict_to_wbxml(wbdict, default_page_num=0)
-		return WBXMLProducer.__init__(self, wb, verbose=verbose)
+		WBXMLProducer.__init__(self, wb, verbose=verbose)
 
 class ProvisionProducer(WBXMLProducer):
 	def __init__(self, policyKey=None, verbose=False):
@@ -138,4 +144,4 @@ class ProvisionProducer(WBXMLProducer):
 		
 		wb = convert_dict_to_wbxml(wbdict, default_page_num=14)
 
-		return WBXMLProducer.__init__(self, wb, verbose=verbose)
+		WBXMLProducer.__init__(self, wb, verbose=verbose)
