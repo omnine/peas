@@ -830,7 +830,7 @@ class wbxmlparser(object):
 def dialog():
     r'''Opens the input and output file dialogs, then calls the parse() function.
     '''
-    from Tkinter import Tk
+    from tkinter import Tk
     import tkFileDialog
     root = Tk()
     root.withdraw()

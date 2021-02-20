@@ -1,12 +1,12 @@
 from twisted.internet.defer import succeed
 from twisted.web.iweb import IBodyProducer
-from zope.interface import implements
+from zope.interface import implementer
 from .dewbxml import wbxmldocument, wbxmlelement, wbxmlstring
 import struct
 
 
+@implementer(IBodyProducer)
 class WBXMLProducer(object):
-	implements(IBodyProducer)
 
 	def __init__(self, wbdoc, verbose=False):
 		self.verbose = verbose
