@@ -9,7 +9,7 @@ from string import ascii_uppercase, digits
 from optparse import OptionParser
 
 #import peas
-
+from .peas import *
 
 from pathlib import Path, PureWindowsPath
 
@@ -153,7 +153,7 @@ def init_authed_client(options, verify=True):
 
 def check_server(options):
 
-    client = peas.Peas()
+    client = Peas()
 
     client.set_creds({'server': options.server})
 
