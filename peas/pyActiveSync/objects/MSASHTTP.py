@@ -113,10 +113,10 @@ class ASHTTPConnector(object):
             self._server_version = res.getheader("ms-server-activesync")
             return True
         else:
-            print "Connection Error!:"
-            print res.status, res.reason
+            print ("Connection Error!:")
+            print (res.status, res.reason)
             for header in res.getheaders():
-                print header[0]+":",header[1]
+                print (header[0]+":",header[1])
             return False
 
     def get_policykey(self):

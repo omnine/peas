@@ -76,7 +76,7 @@ class Search:
             if element.tag is "Status":
                 status = element.text
                 if status != "1":
-                    print "%s Exception: %s" % (root_tag, status)
+                    print ("%s Exception: %s" % (root_tag, status))
             elif element.tag == "Response":
 
                 properties = element.basic_xpath('Store/Result/Properties')
