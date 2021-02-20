@@ -131,7 +131,7 @@ def init_authed_client(options, verify=True):
         error("A password must be specified for this command.")
         return False
 
-    client = peas.Peas()
+    client = Peas()
 
     creds = {
         'server': options.server,

@@ -60,7 +60,7 @@ class Peas:
 
         assert self._backend == PY_ACTIVE_SYNC
 
-        as_conn = py_activesync_helper.ASHTTPConnector(self._creds['server'])  #e.g. "as.myserver.com"
+        as_conn = ASHTTPConnector(self._creds['server'])  #e.g. "as.myserver.com"
         as_conn.set_credential(self._creds['user'], self._creds['password'])
         return as_conn.get_options()
 

@@ -42,7 +42,7 @@ class ASHTTPConnector(object):
     def set_credential(self, username, password):
         import base64
         self.username = username
-        self.credential = base64.b64encode(username+":"+password)
+        self.credential = base64.b64encode((username+":"+password).encode('utf-8')).decode('utf-8')
         self.headers.update({"Authorization" : "Basic " + self.credential})
 
     def do_post(self, url, body, headers, redirected=False):
