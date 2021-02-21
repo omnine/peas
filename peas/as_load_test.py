@@ -98,7 +98,8 @@ def init_authed_client(server, user, password, verify=True):
 
     return client
 
-def test_thread_function(domain, password, index, begin, end, sleep, period):
+
+def test_thread_function(server, domain, password, index, begin, end, sleep, period):
     tic = time.perf_counter()
     toc = tic
     time.sleep(index*sleep)
@@ -109,7 +110,7 @@ def test_thread_function(domain, password, index, begin, end, sleep, period):
             args=['ruler', "-k", "--email", email, "--username", user, "--password", password, "send", "--subject", subject]
 
             ticrun = time.perf_counter()
-            client = init_authed_client("mail.deepnetsecurity.com", user, password, False)
+            client = init_authed_client(server, user, password, False)
             if not client:
                 return
 
@@ -135,9 +136,11 @@ def test_main(args):
     tic = time.perf_counter()
     delay = args.delay
     accounts = args.accounts
+    server = args.server
     domain = args.domain
     period = args.period
     password = args.password
+
     global quiet
     quiet = args.quiet
 
@@ -153,7 +156,7 @@ def test_main(args):
         begin = base + i
         end = begin + 1
         print("thread %d, %d -> %d" % (i, begin, end))
-        threads.append(threading.Thread(target=test_thread_function, args=(domain, password, i, begin, end, delay, period)))
+        threads.append(threading.Thread(target=test_thread_function, args=(server, domain, password, i, begin, end, delay, period)))
 
     # run all tests
     print("======== Start threads ====================")
@@ -198,6 +201,7 @@ if __name__ == "__main__":
     parser.add_argument('--delay', default=0.1, help='the delay (in seconds) between each requests in a thread, default value: 0.1 (seconds)',type=float)
     parser.add_argument('--accounts', help='the number of accounts to be tested',type=int, required=True)
     parser.add_argument('--domain', help='the test domain, e.g. yourdomain.com', required=True)
+    parser.add_argument('--server', help='the exchange server, e.g. mail.yourdomain.com', required=True)
     parser.add_argument('--password', help='mailbox password', required=True)
     parser.add_argument('--period', help='test period, in minutes, optional', type=int)
     parser.add_argument('--report', default="report.csv", help='report file name, default name: report.csv')
