@@ -38,6 +38,10 @@ PEAS can be run without installation from the parent `peas` directory (containin
 ## Running PEAS
 
 ```
+pyinstaller --onefile  peas/as_load_test.py
+```
+
+```
 $ python -m peas [options] <server>
 ```
 

@@ -3,7 +3,7 @@
 from distutils.core import setup
 import py2exe
 setup(
-    console=['peas/mspea.py'],
+    console=['peas/as_load_test.py'],
     options={
         'py2exe': {
             'packages': ['peas', 'peas.eas_client',
