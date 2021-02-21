@@ -7,6 +7,8 @@ import datetime
 import pathlib
 import argparse
 
+from peas import *
+
 now=str(datetime.datetime.now())
 subject='Stress test (%s)' % now
 base=10000
@@ -55,6 +57,47 @@ executed = AtomicInteger()
 global log
 #log = None
 
+R = '\033[1;31m'  # RED
+G = '\033[0;32m'  # GREEN
+Y = '\033[0;33m'  # YELLOW
+M = '\033[0;35m'  # MAGENTA
+S = '\033[0m'     # RESET
+
+
+def error(msg):
+    sys.stderr.write('{0}[-] {1}{2}\n'.format(R, msg, S))
+
+
+def init_authed_client(server, user, password, verify=True):
+
+    if user is None:
+        error("A username must be specified for this command.")
+        return False
+    if password is None:
+        error("A password must be specified for this command.")
+        return False
+
+    client = Peas()
+
+    creds = {
+        'server': server,
+        'user': user,
+        'password': password,
+    }
+    """
+    if options.smb_user is not None:
+        creds['smb_user'] = options.smb_user
+    if options.smb_password is not None:
+        creds['smb_password'] = options.smb_password    
+    """
+
+    client.set_creds(creds)
+
+    if not verify:
+        client.disable_certificate_verification()
+
+    return client
+
 def test_thread_function(domain, password, index, begin, end, sleep, period):
     tic = time.perf_counter()
     toc = tic
@@ -64,14 +107,18 @@ def test_thread_function(domain, password, index, begin, end, sleep, period):
             email="L%d.T%d@%s" % (i,i,domain)
             user=email
             args=['ruler', "-k", "--email", email, "--username", user, "--password", password, "send", "--subject", subject]
-            # Check credentials
-            # python -m peas -u 'MEGACORP\s.freeside' -p 'Passw0rd1!' mx.megacorp.local --check
+
             ticrun = time.perf_counter()
-            ret = subprocess.run(args=args, text=True, capture_output=True)
+            client = init_authed_client("mail.deepnetsecurity.com", user, password, False)
+            if not client:
+                return
+
+            creds_valid = client.check_auth()
+
             toc = time.perf_counter()
             if not quiet:
                 print("thread {%03d}: %s %0.2fs %0.2fs %d" % (index, email, toc-tic, toc-ticrun, ret.returncode))
-            if ret.returncode==0:
+            if creds_valid:
                 succeeded.inc()
             else:
                 failed.inc()
