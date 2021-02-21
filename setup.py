@@ -2,11 +2,21 @@
 
 from distutils.core import setup
 import py2exe
+setup(
+    console=['peas/mspea.py'],
+    options={
+        'py2exe': {
+            'packages': ['peas', 'peas.eas_client',
+                'peas.pyActiveSync', 'peas.pyActiveSync.client', 'peas.pyActiveSync.objects', 'peas.pyActiveSync.utils']
+        }
+    }
+)
 
+"""
 setup(name='PEAS',
       console=['peas/__main__.py'])
 
-"""
+
 setup(name='PEAS',
       version='1.0',
       description='ActiveSync Library',
