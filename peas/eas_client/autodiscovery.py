@@ -60,7 +60,7 @@ class AutoDiscover:
 			raise Exception("AutoDiscover", "Circular redirection")
 		self.redirect_urls.append(new_url)
 		self.state = AutoDiscover.STATE_REDIRECT
-		print "Making request to",new_url
+		print ("Making request to",new_url)
 		d = self.agent.request(
 		    'GET',
 		    new_url,
@@ -70,20 +70,20 @@ class AutoDiscover:
 		d.addErrback(self.autodiscover_error)
 		return d
 	def autodiscover_response(self, result):
-		print "RESPONSE",result,result.code
+		print ("RESPONSE",result,result.code)
 		if result.code == 302:
 			# TODO: "Redirect responses" validation
 			return self.handle_redirect(result.headers.getRawHeaders("location")[0])
 		return result
 	def autodiscover_error(self, error):
-		print "ERROR",error,error.value.reasons[0]
+		print ("ERROR",error,error.value.reasons[0])
 		if self.state < AutoDiscover.LAST_STATE:
 			return self.autodiscover()
 		raise error
 	def autodiscover(self):
 		self.state += 1
 		if self.state in AutoDiscover.AD_REQUESTS:
-			print "Making request to",AutoDiscover.AD_REQUESTS[self.state]%self.email_domain
+			print ("Making request to",AutoDiscover.AD_REQUESTS[self.state]%self.email_domain)
 			body = AutoDiscoveryProducer(self.email)
 			d = self.agent.request(
 			    'GET',
@@ -94,4 +94,4 @@ class AutoDiscover:
 			d.addErrback(self.autodiscover_error)
 			return d
 		else:
-			raise Exception("Unsupported state",str(self.state))
+			raise Exception("Unsupported state", str(self.state))

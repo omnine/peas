@@ -9,7 +9,7 @@ from string import ascii_uppercase, digits
 from optparse import OptionParser
 
 #import peas
-from .peas import *
+from peas import *
 
 from pathlib import Path, PureWindowsPath
 
