@@ -39,6 +39,24 @@ PEAS can be run without installation from the parent `peas` directory (containin
 
 ```
 pyinstaller --onefile  peas/as_load_test.py
+
+https://stackoverflow.com/questions/25733467/no-module-named-when-using-pyinstaller
+
+If you are getting ModuleNotFoundError: No module named ... errors and you:
+
+call PyInstaller from a directory other than your main script
+use relative imports in your script
+then your executable can have trouble finding the relative imports.
+
+This can be fixed by:
+
+calling PyInstaller from the same directory as your main script
+removing any __init__.py files (empty __init__.py files are not required in Python 3.3+)
+or using PyInstaller's paths flag to specify a path to search for imports. E.g. if you are calling PyInstaller from a parent folder to your main script, and your script lives in subfolder, then call PyInstaller as such:
+
+pyinstaller --paths=subfolder subfolder/script.py.
+
+
 ```
 
 ```
