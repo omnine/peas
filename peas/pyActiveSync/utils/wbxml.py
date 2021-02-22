@@ -134,7 +134,7 @@ class wbxml_parser(object):
         charset = self.decode_multibyte_integer()
         string_table_len = self.decode_multibyte_integer()
 
-        if charset is not 0x6A:
+        if charset != 0x6A:
             raise AttributeError("Currently, only UTF-8 is used by MS-ASWBXML")
             return
         if string_table_len > 0:
