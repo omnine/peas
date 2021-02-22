@@ -6,8 +6,9 @@ import time
 import datetime
 import pathlib
 import argparse
+import sys
 
-from peas import *
+from peas import Peas
 
 now=str(datetime.datetime.now())
 subject='Stress test (%s)' % now
