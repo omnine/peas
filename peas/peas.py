@@ -3,8 +3,8 @@ __author__ = 'Adam Rutherford'
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
-from .py_eas_helper import *
-from .py_activesync_helper import *
+from py_eas_helper import *
+from py_activesync_helper import *
 
 
 PY_ACTIVE_SYNC = 1

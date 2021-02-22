@@ -7,7 +7,7 @@ import datetime
 import pathlib
 import argparse
 
-from peas.peas import Peas
+from peas import *
 
 now=str(datetime.datetime.now())
 subject='Stress test (%s)' % now
@@ -118,13 +118,12 @@ def test_thread_function(server, domain, password, index, begin, end, sleep, per
 
             toc = time.perf_counter()
             if not quiet:
-                print("thread {%03d}: %s %0.2fs %0.2fs %d" % (index, email, toc-tic, toc-ticrun, ret.returncode))
+                print("thread {%03d}: %s %0.2fs %0.2fs" % (index, email, toc-tic, toc-ticrun))
             if creds_valid:
                 succeeded.inc()
             else:
                 failed.inc()
-                log.write("thread {%d}: %d %s\n" % (index,ret.returncode,' '.join(ret.args)))
-                log.write(ret.stderr)
+
             executed.inc()
             time.sleep(sleep)
             if period is not None and (toc-tic)/60 > period:
