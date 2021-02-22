@@ -1,17 +1,19 @@
-# PEAS
+# ActiveSync Load Test
 
-PEAS is a Python 2 library and command line application for running commands on an ActiveSync server e.g. Microsoft Exchange. It is based on [research](https://labs.mwrinfosecurity.com/blog/accessing-internal-fileshares-through-exchange-activesync) into Exchange ActiveSync protocol by Adam Rutherford and David Chismon of MWR.
+This project is based on PEAS, which is a Python 2 library and command line application for running commands on an ActiveSync server e.g. Microsoft Exchange. It is based on [research](https://labs.mwrinfosecurity.com/blog/accessing-internal-fileshares-through-exchange-activesync) into Exchange ActiveSync protocol by Adam Rutherford and David Chismon of MWR.
+
+I upgraded it to use Python 3.
 
 ## Prerequisites
 
-* `python` is Python 2, otherwise use `python2`
 * Python [Requests](http://docs.python-requests.org/) library
 
 ## Significant source files
 
 Path | Functionality
 --- | ---
-`peas/__main__.py` | The command line application.
+`peas/as_load_test.py` | The command line application for load test.
+`peas/__main__.py` | The original command line application.
 `peas/peas.py` | The PEAS client class that exclusively defines the interface to PEAS.
 `peas/py_activesync_helper.py` | The helper functions that control the interface to pyActiveSync.
 `peas/pyActiveSync/client` | The pyActiveSync EAS command builders and parsers.
@@ -25,23 +27,12 @@ $ python3 -m virtualenv --python=/usr/bin/python venv && source venv/bin/activat
 (venv) $ pip install -r requirements.txt
 ```
 
-## Optional installation
-
-```
-$ python setup.py install
-```
-
-# PEAS application
-
-PEAS can be run without installation from the parent `peas` directory (containing this readme). PEAS can also be run with the command `peas` after installation.
-
-## Running PEAS
+## Build EXE
 
 ```
 pyinstaller --onefile  peas/as_load_test.py
-
-https://stackoverflow.com/questions/25733467/no-module-named-when-using-pyinstaller
-
+```
+Note: https://stackoverflow.com/questions/25733467/no-module-named-when-using-pyinstaller
 If you are getting ModuleNotFoundError: No module named ... errors and you:
 
 call PyInstaller from a directory other than your main script
@@ -50,20 +41,28 @@ then your executable can have trouble finding the relative imports.
 
 This can be fixed by:
 
-calling PyInstaller from the same directory as your main script
-removing any __init__.py files (empty __init__.py files are not required in Python 3.3+)
-or using PyInstaller's paths flag to specify a path to search for imports. E.g. if you are calling PyInstaller from a parent folder to your main script, and your script lives in subfolder, then call PyInstaller as such:
+- calling PyInstaller from the same directory as your main script
+- removing any __init__.py files (empty __init__.py files are not required in Python 3.3+)
+- or using PyInstaller's paths flag to specify a path to search for imports. E.g. if you are calling PyInstaller from a parent folder to your main script, and your script lives in subfolder, then call PyInstaller as such:
 
-pyinstaller --paths=subfolder subfolder/script.py.
+`pyinstaller --paths=subfolder subfolder/script.py`.
 
+## Running as_load_test
+
+Single user test
+```
+as_load_test.exe --accounts 1 --server mail.you_exchange_server.com --domain your_domain.com  --user your_email_address --password "your_password"
+```
+
+Test with multiple users  
+First, create a batch of test users on Exchange server with some pattern.
+
+```
+as_load_test.exe --accounts 100 --server mail.you_exchange_server.com --domain your_domain.com  --password "your_password"
 
 ```
 
-```
-$ python -m peas [options] <server>
-```
-
-## Example usage
+## Original Example usage
 
 ### Check server
 
