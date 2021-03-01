@@ -152,7 +152,7 @@ def sync(as_conn, curs, collections, collection_sync_params, gie_options, emails
     has_synckey, just_got_synckey = getitemestimate_check_prime_collections(as_conn, curs, getitemestimate_responses,
                                                                             emails_out)
 
-    if (len(has_synckey) < collections) or (len(just_got_synckey) > 0):  #grab new estimates, since they changed
+    if (len(has_synckey) < len(collections)) or (len(just_got_synckey) > 0):  #grab new estimates, since they changed
         getitemestimate_responses = do_getitemestimates(as_conn, curs, has_synckey, gie_options)
 
     collections_to_sync = {}
@@ -165,7 +165,8 @@ def sync(as_conn, curs, collections, collection_sync_params, gie_options, emails
             #print "GetItemEstimate Status (error): %s, CollectionId: %s." % (response.Status, response.CollectionId)
             pass
 
-    if len(collections_to_sync) > 0:
+# todo sync has problem 0x80 AttributeError("Token has attributes. MS-ASWBXML does not use attributes."), perhaps it is realted to attachment
+    if len(collections_to_sync) > 10000:  # > 0, make it not do anything
         sync_res = do_sync(as_conn, curs, collections_to_sync, emails_out)
 
         if sync_res:
