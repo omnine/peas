@@ -49,7 +49,7 @@ def _parse_for_emails(res, emails):
     data = str(res)
 
     etparser = ElementTree.XMLParser(recover=True)
-    tree = ElementTree.fromstring(data, etparser)
+    tree = ElementTree.fromstring(data.encode('utf-8'), etparser)
 
     for item in tree.iter('{airsync:}ApplicationData'):
         s = ElementTree.tostring(item)
