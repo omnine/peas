@@ -8,7 +8,7 @@ import pathlib
 import argparse
 import sys
 
-from peas import Peas
+from peas import Peas, PY_EAS_CLIENT
 
 now = str(datetime.datetime.now())
 subject = 'Stress test (%s)' % now
@@ -124,6 +124,8 @@ def test_thread_function(server, domain, singleuser, password, index, begin, end
                 print("thread {%03d}: %s %0.2fs %0.2fs" % (index, email, toc - tic, toc - ticrun))
             if creds_valid:
                 succeeded.inc()
+                client.set_backend(PY_EAS_CLIENT)
+                client.extract_emails()
             else:
                 failed.inc()
 
