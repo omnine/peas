@@ -57,12 +57,12 @@ def _parse_for_emails(res, emails):
 
 
 def as_request(as_conn, cmd, wapxml_req):
-    #print "\r\n%s Request:" % cmd
-    #print wapxml_req
+#    print("\r\n%s Request:" % cmd)
+#    print(wapxml_req)
     res = as_conn.post(cmd, parser.encode(wapxml_req))
     wapxml_res = parser.decode(res)
-    #print "\r\n%s Response:" % cmd
-    #print wapxml_res
+#    print("\r\n%s Response:" % cmd)
+#    print(wapxml_res)
     return wapxml_res
 
 
