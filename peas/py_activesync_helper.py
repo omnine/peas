@@ -60,6 +60,8 @@ def as_request(as_conn, cmd, wapxml_req):
 #    print("\r\n%s Request:" % cmd)
 #    print(wapxml_req)
     res = as_conn.post(cmd, parser.encode(wapxml_req))
+    if len(res) == 0:
+        return ""
     wapxml_res = parser.decode(res)
 #    print("\r\n%s Response:" % cmd)
 #    print(wapxml_res)
@@ -188,10 +190,6 @@ def disable_certificate_verification():
 
 def extract_emails(creds):
 
-    storage.erase_db()
-    storage.create_db_if_none()
-
-    conn, curs = storage.get_conn_curs()
     device_info = {
         "Model": "Outlook for iOS and Android",
         "IMEI": "2095f3b9f442a32220d4d54e641bd4aa",
@@ -208,8 +206,10 @@ def extract_emails(creds):
     as_conn.set_credential(creds['user'], creds['password'])
 
     #FolderSync + Provision
-    foldersync_xmldoc_req = FolderSync.build(storage.get_synckey("0"))
+    foldersync_xmldoc_req = FolderSync.build("0")
     foldersync_xmldoc_res = as_request(as_conn, "FolderSync", foldersync_xmldoc_req)
+    if len(foldersync_xmldoc_res) == 0:
+        return []
     changes, synckey, status = FolderSync.parse(foldersync_xmldoc_res)
     if 138 < int(status) < 145:
         ret = as_status("FolderSync", status)
@@ -221,68 +221,8 @@ def extract_emails(creds):
             ret = as_status("FolderSync", status)
             #print ret
             raise Exception("Unresolvable provisioning error: %s. Cannot continue..." % status)
-    if len(changes) > 0:
-        storage.update_folderhierarchy(changes)
-        storage.update_synckey(synckey, "0", curs)
-        conn.commit()
 
-    collection_id_of = storage.get_folder_name_to_id_dict()
-
-    inbox = collection_id_of["Inbox"]
-
-    collection_sync_params = {
-        inbox:
-            {  #"Supported":"",
-               #"DeletesAsMoves":"1",
-               #"GetChanges":"1",
-               "WindowSize": "512",
-               "Options": {
-                   "FilterType": airsync_FilterType.OneMonth,
-                   "Conflict": airsync_Conflict.ServerReplacesClient,
-                   "MIMETruncation": airsync_MIMETruncation.TruncateNone,
-                   "MIMESupport": airsync_MIMESupport.SMIMEOnly,
-                   "Class": airsync_Class.Email,
-                   #"MaxItems":"300", #Recipient information cache sync requests only. Max number of frequently used contacts.
-                   "airsyncbase_BodyPreference": [{
-                                                      "Type": airsyncbase_Type.HTML,
-                                                      "TruncationSize": "1000000000",  # Max 4,294,967,295
-                                                      "AllOrNone": "1",
-                                                      # I.e. Do not return any body, if body size > tuncation size
-                                                      #"Preview": "255", # Size of message preview to return 0-255
-                                                  },
-                                                  {
-                                                      "Type": airsyncbase_Type.MIME,
-                                                      "TruncationSize": "3000000000",  # Max 4,294,967,295
-                                                      "AllOrNone": "1",
-                                                      # I.e. Do not return any body, if body size > tuncation size
-                                                      #"Preview": "255", # Size of message preview to return 0-255
-                                                  }
-                   ],
-                   #"airsyncbase_BodyPartPreference":"",
-                   #"rm_RightsManagementSupport":"1"
-               },
-               #"ConversationMode":"1",
-               #"Commands": {"Add":None, "Delete":None, "Change":None, "Fetch":None}
-               },
-    }
-
-    gie_options = {
-        inbox:
-            {  #"ConversationMode": "0",
-               "Class": airsync_Class.Email,
-               "FilterType": airsync_FilterType.OneMonth
-               #"MaxItems": "" #Recipient information cache sync requests only. Max number of frequently used contacts.
-               },
-    }
-
-    collections = [inbox]
     emails = []
-
-    sync(as_conn, curs, collections, collection_sync_params, gie_options, emails)
-
-    if storage.close_conn_curs(conn):
-        del conn, curs
-
     return emails
 
 
