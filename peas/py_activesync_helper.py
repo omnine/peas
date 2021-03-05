@@ -61,7 +61,7 @@ def as_request(as_conn, cmd, wapxml_req):
 #    print(wapxml_req)
     res = as_conn.post(cmd, parser.encode(wapxml_req))
     if len(res) == 0:
-        return ""
+        return None
     wapxml_res = parser.decode(res)
 #    print("\r\n%s Response:" % cmd)
 #    print(wapxml_res)
@@ -208,7 +208,7 @@ def extract_emails(creds):
     #FolderSync + Provision
     foldersync_xmldoc_req = FolderSync.build("0")
     foldersync_xmldoc_res = as_request(as_conn, "FolderSync", foldersync_xmldoc_req)
-    if len(foldersync_xmldoc_res) == 0:
+    if foldersync_xmldoc_res is None:
         return []
     changes, synckey, status = FolderSync.parse(foldersync_xmldoc_res)
     if 138 < int(status) < 145:
