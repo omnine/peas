@@ -123,9 +123,12 @@ def test_thread_function(server, domain, singleuser, password, index, begin, end
             if not quiet:
                 print("thread {%03d}: %s %0.2fs %0.2fs" % (index, email, toc - tic, toc - ticrun))
             if creds_valid:
-                succeeded.inc()
                 client.set_backend(PY_EAS_CLIENT)
-                client.extract_emails()
+                status = client.extract_emails()
+                if int(status) == 111:
+                    failed.inc()
+                else:
+                    succeeded.inc()
             else:
                 failed.inc()
 

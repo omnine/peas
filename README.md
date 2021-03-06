@@ -55,11 +55,43 @@ as_load_test.exe --accounts 1 --server mail.you_exchange_server.com --domain you
 ```
 
 Test with multiple users  
-First, create a batch of test users on Exchange server with some pattern.
+First, create a batch of test users on Exchange server with some pattern. For instance,
+```buildoutcfg
+#username format L10000.T10000
+$firstname="L$start"
+$lastname="T$start"
+
+New-Mailbox -UserPrincipalName "$firstname.$lastname@$domain" -Alias "$firstname.$lastname"  -Name "$firstname $lastname" -OrganizationalUnit "$ou" -Password $securepass -Firstname "$firstname" -LastName "$lastname" -DisplayName "$firstname $lastname" -ResetPasswordOnNextLogon $false
+
+
+```
+Then run the following command,
 
 ```
 as_load_test.exe --accounts 100 --server mail.you_exchange_server.com --domain your_domain.com  --password "your_password"
 
+```
+
+You can see the usage by running `as_load_test.exe -h`
+
+```buildoutcfg
+C:\work\peas\dist>as_load_test.exe -h
+usage: as_load_test.exe [-h] [--delay DELAY] --accounts ACCOUNTS --domain DOMAIN --server SERVER --password PASSWORD [--user USER] [--period PERIOD] [--report REPORT] [--quiet | --no-quiet] [--log LOG]
+
+ActiveSync load tester
+
+optional arguments:
+  -h, --help           show this help message and exit
+  --delay DELAY        the delay (in seconds) between each requests in a thread, default value: 0.1 (seconds)
+  --accounts ACCOUNTS  the number of accounts to be tested
+  --domain DOMAIN      the test domain, e.g. yourdomain.com
+  --server SERVER      the exchange server, e.g. mail.yourdomain.com
+  --password PASSWORD  mailbox password
+  --user USER          username for single test, optional
+  --period PERIOD      test period, in minutes, optional
+  --report REPORT      report file name, default name: report.csv
+  --quiet, --no-quiet  do not show result of every request
+  --log LOG            error log file name, default name: activesync_test.log
 ```
 
 ## Original Example usage

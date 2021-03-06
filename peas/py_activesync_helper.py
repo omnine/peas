@@ -209,7 +209,7 @@ def extract_emails(creds):
     foldersync_xmldoc_req = FolderSync.build("0")
     foldersync_xmldoc_res = as_request(as_conn, "FolderSync", foldersync_xmldoc_req)
     if foldersync_xmldoc_res is None:
-        return []
+        return "1"  # also success
     changes, synckey, status = FolderSync.parse(foldersync_xmldoc_res)
     if 138 < int(status) < 145:
         ret = as_status("FolderSync", status)
@@ -222,8 +222,7 @@ def extract_emails(creds):
             #print ret
             raise Exception("Unresolvable provisioning error: %s. Cannot continue..." % status)
 
-    emails = []
-    return emails
+    return status
 
 
 def get_unc_listing(creds, unc_path, username=None, password=None):
